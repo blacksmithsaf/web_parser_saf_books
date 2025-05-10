@@ -48,15 +48,15 @@ def parse_page(base_url):
         if page_num == 1:
             title = soup.title.string.strip() if soup.title else "Заголовок не найден"
 
-        # ссылки на книги
+
         book_links = [a['href'] for a in soup.select('article.product_pod h3 a')]
         full_book_links = [requests.compat.urljoin(url, link) for link in book_links]
 
-        # асинхронный парсинг всех книг на странице
+        
         books_on_page = asyncio.run(parse_books_async(full_book_links))
         all_books.extend(books_on_page)
 
-        # следующая страница
+        
         next_btn = soup.select_one('li.next > a')
         if next_btn:
             url = requests.compat.urljoin(url, next_btn['href'])
@@ -64,7 +64,7 @@ def parse_page(base_url):
         else:
             url = None
 
-    # сохранение
+    
     with open("output.txt", "w", encoding="utf-8-sig") as f:
         f.write(f"Заголовок: {title}\n\n")
         f.write("Книги на всех страницах:\n")
